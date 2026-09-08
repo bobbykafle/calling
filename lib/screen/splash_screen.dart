@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen>
     // AuthBloc status in a BlocListener wrapping this widget.
     Future.delayed(const Duration(milliseconds: 2600), () {
       if (!mounted) return;
-      Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+      Navigator.of(context).pushReplacementNamed(AppRoutes.otp);
     });
   }
 

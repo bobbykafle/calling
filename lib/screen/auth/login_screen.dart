@@ -4,10 +4,14 @@ import 'package:connectcall/routes/app_routes.dart';
 import 'package:connectcall/screen/auth/bloc/auth_bloc.dart';
 import 'package:connectcall/utils/build_context.dart';
 import 'package:connectcall/utils/custom_textfiled.dart';
+import 'package:connectcall/widgets/app_container.dart';
 import 'package:connectcall/widgets/app_auth_scafflod.dart';
+import 'package:connectcall/widgets/app_button.dart';
+import 'package:connectcall/widgets/app_error.dart';
+import 'package:connectcall/widgets/app_fotter.dart';
 import 'package:connectcall/widgets/app_padding.dart';
 import 'package:connectcall/widgets/app_space.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -15,8 +19,6 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated) {
@@ -27,9 +29,10 @@ class LoginScreen extends StatelessWidget {
           );
         } else if (state.status == AuthStatus.failure &&
             state.errorMessage != null) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          AppTErrorNotification.show(
+            context,
+            message: state.errorMessage!,
+          );
         }
       },
       builder: (context, state) {
@@ -39,31 +42,30 @@ class LoginScreen extends StatelessWidget {
           header: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              AppImageView(type: AppImageType.login, height: 280),
+              AppImageView(type: AppImageType.login, height: 200),
               const VSpace(2),
               Text(
-                'Welcome Back',
-                style: context.headlineML.copyWith(
-                  color: isDarkMode ? context.white : context.primaryBlue,
+                'Welcome  Back'.toUpperCase(),
+                style: context.headlineLarge.copyWith(
+                  color: context.black,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const VSpace(1),
               Text(
-                'Log in to continue to Callly',
-                style: context.bodyMR.copyWith(
-                  color: isDarkMode ? context.hintColor : context.hintColor,
-                ),
+                'Ready to chat? Log in to start your call.',
+                style: context.bodySSB.copyWith(color: context.white),
                 textAlign: TextAlign.center,
               ),
             ],
           ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          body: CustomAuthContainer(
             children: [
               DecoratedTextField(
                 aboveText: 'Email',
                 hintText: 'you@example.com',
                 inputType: TextInputType.emailAddress,
+                prefixIcon: const Icon(CupertinoIcons.envelope_fill),
                 textInputAction: TextInputAction.next,
                 validationError: state.isLoginSubmitted
                     ? state.loginEmail.error
@@ -74,8 +76,9 @@ class LoginScreen extends StatelessWidget {
               const VSpace(2),
               DecoratedTextField(
                 aboveText: 'Password',
-                hintText: '••••••••',
+                hintText: 'Vob@134%',
                 inputType: TextInputType.visiblePassword,
+                prefixIcon: const Icon(CupertinoIcons.lock_fill),
                 textInputAction: TextInputAction.done,
                 validationError: state.isLoginSubmitted
                     ? state.loginPassword.error
@@ -85,69 +88,50 @@ class LoginScreen extends StatelessWidget {
                 onFieldSubmitted: (_) =>
                     context.read<AuthBloc>().add(const LoginSubmitted()),
               ),
+              const VSpace(1),
               Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () =>
-                      Navigator.pushNamed(context, AppRoutes.forgotPassword),
-                  child: Text(
-                    'Forgot Password?',
-                    style: context.labelMB.copyWith(
-                      color: isDarkMode ? context.lightBlue : context.primaryBlue,
+                alignment: Alignment.topRight,
+                child: IntrinsicWidth(
+                  child: CustomButton.text(
+                    text: 'Forgot Password?',
+                  
+                    onPressed: () => Navigator.pushNamed(
+                      context,
+                      AppRoutes.forgotPassword,
                     ),
                   ),
                 ),
               ),
               const VSpace(1),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.primaryBlue,
-                  foregroundColor: context.white,
+              CustomButton(
+                text: 'Log In',
+                isLoading: isLoading,
+                icon: CupertinoIcons.arrow_right_circle_fill,
+                suffixIcon:  Icon(
+                  CupertinoIcons.sparkles,
+                  size: 18,
+                  color: context.white,
                 ),
-                onPressed: isLoading
-                    ? null
-                    : () =>
-                        context.read<AuthBloc>().add(const LoginSubmitted()),
-                child: isLoading
-                    ? SizedBox(
-                        height: 22,
-                        width: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.4,
-                          color: context.white,
-                        ),
-                      )
-                    : Text(
-                        'Log In',
-                        style: context.titleSB.copyWith(color: context.white),
-                      ),
+                onPressed: () =>
+                    context.read<AuthBloc>().add(const LoginSubmitted()),
+              ),
+              const VSpace(1),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don't have an account?   ",
+                    style: context.labelMR.copyWith(
+                      color:context.black
+                    ),
+                  ),
+                  CustomButton.text(text: 'Sign up'.toUpperCase(), 
+                  onPressed:()=> Navigator.pushReplacementNamed(context, AppRoutes.signup),),
+                ],
               ),
             ],
           ),
-          footer: AppPadding(
-            vertical: 2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-                Text(
-                  "Don't have an account?",
-                  style: context.labelMR.copyWith(
-                    color: isDarkMode ? context.hintColor : context.black,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () =>
-                      Navigator.pushReplacementNamed(context, AppRoutes.signup),
-                  child: Text(
-                    'Sign Up',
-                    style: context.labelLB.copyWith(
-                      color: isDarkMode ? context.lightBlue : context.primaryBlue,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          footer: const AppPadding(vertical: 2, child: AppLegalFooter()),
         );
       },
     );

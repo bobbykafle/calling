@@ -8,13 +8,19 @@ import 'package:connectcall/screen/auth/bloc/auth_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  ZegoUIKitPrebuiltCallInvitationService().setNavigatorKey(navigatorKey);
   runApp(const MyApp());
 }
 
@@ -25,10 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        
         BlocProvider(create: (_) => AuthBloc(AuthRepository())),
-
-       
         BlocProvider(create: (_) => ThemeBloc()),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
@@ -36,8 +39,14 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Callly',
             debugShowCheckedModeBanner: false,
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
+            navigatorKey: navigatorKey,
+            
+            theme: AppTheme.light.copyWith(
+              textTheme: GoogleFonts.plusJakartaSansTextTheme(AppTheme.light.textTheme),
+            ),
+            darkTheme: AppTheme.dark.copyWith(
+              textTheme: GoogleFonts.plusJakartaSansTextTheme(AppTheme.dark.textTheme),
+            ),
             themeMode: themeState.mode, 
             initialRoute: AppRoutes.splash, 
             onGenerateRoute: AppRouter.generateRoute,
@@ -47,3 +56,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

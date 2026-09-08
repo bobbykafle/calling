@@ -107,6 +107,7 @@ class AuthRepository {
     if (error is FirebaseAuthException) {
       switch (error.code) {
         case 'user-not-found':
+        case 'invalid-credential':
           return 'No account exists for that email.';
         case 'wrong-password':
           return 'Incorrect password.';

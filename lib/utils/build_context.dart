@@ -22,12 +22,13 @@ extension ColorXContext on BuildContext {
 
   // CUSTOM APP COLORS (Blue, Light Blue, White, Black, Off-White, Cream)
   Color get primaryBlue => const Color(0xFF005CE3);
-  Color get lightBlue => const Color(0xFFE1EEFE);
+  Color get lightBlue => const Color(0xFF2886F8); 
+
   Color get white => const Color(0xFFFFFFFF);
   Color get black => const Color(0xFF000000);
   Color get offWhite => const Color(0xFFFAF9F6);
   Color get cream => const Color(0xFFFDF6EC);
-
+  Color get reacher  => const Color (0xFFC7DEFA);
   // HINT / HELPER TEXT COLOR
   Color get hintColor => const Color(0xFF94A3B8);
   

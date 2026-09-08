@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 import 'package:connectcall/utils/build_context.dart';
 import 'package:connectcall/utils/formz.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 mixin DecoratedBorder on Widget {
@@ -87,9 +88,8 @@ class _DecoratedTextFieldState extends State<DecoratedTextField> {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Updated to use the clean context extension colors (Blue, Light Blue, White, Black, Off-White, Cream)
-    final Color textColor = isDark ? context.white : context.black;
-    final Color labelColor = isDark ? context.lightBlue : context.primaryBlue;
+    final Color textColor = isDark ? context.black : context.black;
+    final Color labelColor = isDark ? context.primaryBlue : context.primaryBlue;
     final Color hintColor = isDark ? context.lightBlue.withOpacity(0.6) : context.hintColor.withOpacity(0.6);
     final Color borderColor = isDark ? context.primaryBlue.withOpacity(0.5) : context.lightBlue;
     final Color activeBorderColor = context.primaryBlue;
@@ -104,8 +104,8 @@ class _DecoratedTextFieldState extends State<DecoratedTextField> {
             widget.aboveText!,
             style: context.labelMR.copyWith(
               color: labelColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 6),
@@ -142,9 +142,17 @@ class _DecoratedTextFieldState extends State<DecoratedTextField> {
             hintText: widget.hintText,
             helperText: widget.helperText,
             enabled: widget.enabled,
-            prefixIcon: widget.prefixIcon,
             errorMaxLines: 2,
             errorText: widget.validationError?.errorText,
+            prefixIcon: widget.prefixIcon != null
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: IconTheme(
+                      data: IconThemeData(color: iconColor, size: 20),
+                      child: widget.prefixIcon!,
+                    ),
+                  )
+                : null,
             suffixIcon: isPasswordField
                 ? IconButton(
                     onPressed: () {
@@ -153,7 +161,7 @@ class _DecoratedTextFieldState extends State<DecoratedTextField> {
                       });
                     },
                     icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    _obscureText ? CupertinoIcons.eye_slash : CupertinoIcons.eye,
                       color: iconColor,
                       size: 20,
                     ),

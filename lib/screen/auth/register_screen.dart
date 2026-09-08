@@ -1,9 +1,17 @@
+import 'package:connectcall/images/image_container.dart';
+import 'package:connectcall/images/image_link.dart';
 import 'package:connectcall/routes/app_routes.dart';
 import 'package:connectcall/screen/auth/bloc/auth_bloc.dart';
 import 'package:connectcall/utils/build_context.dart';
 import 'package:connectcall/utils/custom_textfiled.dart';
+import 'package:connectcall/widgets/app_container.dart';
 import 'package:connectcall/widgets/app_auth_scafflod.dart';
-import 'package:flutter/material.dart';
+import 'package:connectcall/widgets/app_button.dart';
+import 'package:connectcall/widgets/app_error.dart';
+import 'package:connectcall/widgets/app_fotter.dart';
+import 'package:connectcall/widgets/app_padding.dart';
+import 'package:connectcall/widgets/app_space.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignupScreen extends StatelessWidget {
@@ -11,144 +19,162 @@ class SignupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated) {
-          Navigator.pushNamedAndRemoveUntil(context, AppRoutes.home, (_) => false);
-        } else if (state.status == AuthStatus.failure && state.errorMessage != null) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.home,
+            (_) => false,
+          );
+        } else if (state.status == AuthStatus.failure &&
+            state.errorMessage != null) {
+          AppTErrorNotification.show(
+            context,
+            message: state.errorMessage!,
+          );
         }
       },
       builder: (context, state) {
         final isLoading = state.status == AuthStatus.loading;
 
         return AuthScaffold(
-          showBackButton: true,
+          showBackButton: false,
           header: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+                AppImageView(type: AppImageType.createAccount, height: 200),
+              const VSpace(2),
               Text(
-                'Create Account',
-                style: context.headlineML.copyWith(
-                  color: isDarkMode ? context.white : context.primaryBlue,
+                'Create   Account'.toUpperCase(),
+                style: context.headlineLarge.copyWith(
+                  color: context.black,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 6),
+              const VSpace(1),
               Text(
                 'Sign up to start calling on Callly',
-                style: context.bodyMR.copyWith(
-                  color: context.hintColor,
-                ),
+                style: context.bodySSB.copyWith(color: context.white),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          body: CustomAuthContainer(
             children: [
               Center(
                 child: GestureDetector(
                   // TODO: hook this up to image_picker / file_picker and
                   // dispatch SignupPhotoChanged(pickedPath).
                   onTap: () {},
-                  child: CircleAvatar(
-                    radius: 40,
-                    backgroundColor: isDarkMode ? context.surface : context.lightBlue,
-                    backgroundImage: state.signupPhotoPath != null
-                        ? AssetImage(state.signupPhotoPath!) as ImageProvider
-                        : null,
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: context.lightBlue,
+                      image: state.signupPhotoPath != null
+                          ? DecorationImage(
+                              image: AssetImage(state.signupPhotoPath!),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
                     child: state.signupPhotoPath == null
                         ? Icon(
-                            Icons.camera_alt_outlined,
-                            color: isDarkMode ? context.lightBlue : context.primaryBlue,
+                            CupertinoIcons.camera_fill,
+                            color: context.primaryBlue,
                           )
                         : null,
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const VSpace(2),
               DecoratedTextField(
                 aboveText: 'Full Name',
                 hintText: 'Jane Doe',
                 textCapitalization: TextCapitalization.words,
+                prefixIcon: const Icon(CupertinoIcons.person_fill),
                 textInputAction: TextInputAction.next,
-                validationError: state.isSignupSubmitted ? state.signupName.error : null,
-                onChanged: (v) => context.read<AuthBloc>().add(SignupNameChanged(v)),
+                validationError:
+                    state.isSignupSubmitted ? state.signupName.error : null,
+                onChanged: (v) =>
+                    context.read<AuthBloc>().add(SignupNameChanged(v)),
               ),
-              const SizedBox(height: 16),
+              const VSpace(2),
               DecoratedTextField(
                 aboveText: 'Email',
                 hintText: 'you@example.com',
                 inputType: TextInputType.emailAddress,
+                prefixIcon: const Icon(CupertinoIcons.envelope_fill),
                 textInputAction: TextInputAction.next,
-                validationError: state.isSignupSubmitted ? state.signupEmail.error : null,
-                onChanged: (v) => context.read<AuthBloc>().add(SignupEmailChanged(v)),
+                validationError:
+                    state.isSignupSubmitted ? state.signupEmail.error : null,
+                onChanged: (v) =>
+                    context.read<AuthBloc>().add(SignupEmailChanged(v)),
               ),
-              const SizedBox(height: 16),
+              const VSpace(2),
               DecoratedTextField(
                 aboveText: 'Password',
-                hintText: '••••••••',
+                hintText: 'Vob@134%',
                 inputType: TextInputType.visiblePassword,
+                prefixIcon: const Icon(CupertinoIcons.lock_fill),
                 textInputAction: TextInputAction.next,
-                validationError: state.isSignupSubmitted ? state.signupPassword.error : null,
-                onChanged: (v) => context.read<AuthBloc>().add(SignupPasswordChanged(v)),
+                validationError: state.isSignupSubmitted
+                    ? state.signupPassword.error
+                    : null,
+                onChanged: (v) =>
+                    context.read<AuthBloc>().add(SignupPasswordChanged(v)),
               ),
-              const SizedBox(height: 16),
+              const VSpace(2),
               DecoratedTextField(
                 aboveText: 'Confirm Password',
-                hintText: '••••••••',
+                hintText: 'Vob@134%',
                 inputType: TextInputType.visiblePassword,
+                prefixIcon: const Icon(CupertinoIcons.lock_fill),
                 textInputAction: TextInputAction.done,
-                validationError: state.isSignupSubmitted ? state.signupConfirmPassword.error : null,
-                onChanged: (v) => context.read<AuthBloc>().add(SignupConfirmPasswordChanged(v)),
-                onFieldSubmitted: (_) => context.read<AuthBloc>().add(const SignupSubmitted()),
+                validationError: state.isSignupSubmitted
+                    ? state.signupConfirmPassword.error
+                    : null,
+                onChanged: (v) => context
+                    .read<AuthBloc>()
+                    .add(SignupConfirmPasswordChanged(v)),
+                onFieldSubmitted: (_) =>
+                    context.read<AuthBloc>().add(const SignupSubmitted()),
               ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.primaryBlue,
-                  foregroundColor: context.white,
+              const VSpace(1),
+              CustomButton(
+                text: 'Sign Up',
+                isLoading: isLoading,
+                icon: CupertinoIcons.person_add_solid,
+                suffixIcon: Icon(
+                  CupertinoIcons.sparkles,
+                  size: 18,
+                  color: context.white,
                 ),
-                onPressed: isLoading ? null : () => context.read<AuthBloc>().add(const SignupSubmitted()),
-                child: isLoading
-                    ? SizedBox(
-                        height: 22,
-                        width: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.4,
-                          color: context.white,
-                        ),
-                      )
-                    : Text(
-                        'Sign Up',
-                        style: context.titleSB.copyWith(color: context.white),
-                      ),
+                onPressed: () =>
+                    context.read<AuthBloc>().add(const SignupSubmitted()),
               ),
-            ],
-          ),
-          footer: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Already have an account?',
-                style: context.labelMR.copyWith(
-                  color: isDarkMode ? context.hintColor : context.black,
-                ),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
-                child: Text(
-                  'Log In',
-                  style: context.labelLB.copyWith(
-                    color: isDarkMode ? context.lightBlue : context.primaryBlue,
+              const VSpace(1),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Already have an account?   ',
+                    style: context.labelMR.copyWith(color: context.black),
                   ),
-                ),
+                  CustomButton.text(
+                    text: 'Log In'.toUpperCase(),
+                    onPressed: () => Navigator.pushReplacementNamed(
+                      context,
+                      AppRoutes.login,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
+          footer: const AppPadding(vertical: 2, child: AppLegalFooter()),
         );
       },
     );
