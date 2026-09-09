@@ -3,6 +3,7 @@ import 'package:connectcall/screen/auth/login_screen.dart';
 import 'package:connectcall/screen/auth/otpp_screen.dart';
 import 'package:connectcall/screen/auth/register_screen.dart';
 import 'package:connectcall/screen/auth/update_screen.dart';
+import 'package:connectcall/screen/onboard/mainshall/main_shall_screen.dart';
 import 'package:connectcall/screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -32,12 +33,11 @@ class AppRouter {
       case AppRoutes.resetPassword:
         return _page(const ResetPasswordScreen(), settings);
 
-      // Wire your real home/dashboard screen here.
+      case AppRoutes.mainshall:
+        return _page(const MainShell(), settings);
+
       case AppRoutes.home:
-        return _page(
-          const Scaffold(body: Center(child: Text('Home'))),
-          settings,
-        );
+        return _page(const MainShell(), settings);
 
       default:
         return _page(

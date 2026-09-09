@@ -30,6 +30,11 @@ dependencies:
   pinput: ^6.0.2
   google_fonts: ^8.2.1
   zego_uikit_prebuilt_call: ^4.24.4
+  zego_uikit_signaling_plugin: ^2.8.21
+  zego_zim: ^2.29.0+1
+  image_picker: ^1.2.3
+  
+  
 
 dev_dependencies:
   flutter_test:

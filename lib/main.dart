@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
             darkTheme: AppTheme.dark.copyWith(
               textTheme: GoogleFonts.plusJakartaSansTextTheme(AppTheme.dark.textTheme),
             ),
+           
             themeMode: themeState.mode, 
             initialRoute: AppRoutes.splash, 
             onGenerateRoute: AppRouter.generateRoute,

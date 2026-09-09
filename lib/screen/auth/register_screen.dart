@@ -24,7 +24,7 @@ class SignupScreen extends StatelessWidget {
         if (state.status == AuthStatus.authenticated) {
           Navigator.pushNamedAndRemoveUntil(
             context,
-            AppRoutes.home,
+            AppRoutes.mainshall,
             (_) => false,
           );
         } else if (state.status == AuthStatus.failure &&

@@ -1,4 +1,5 @@
 import 'package:connectcall/utils/build_context.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomBackButton extends StatelessWidget {
@@ -19,12 +20,16 @@ class CustomBackButton extends StatelessWidget {
       padding: padding,
       child: IconButton(
         onPressed: onPressed ?? () => Navigator.of(context).pop(),
+
         icon: Icon(
-          Icons.arrow_back_rounded,
-          color: context.black
+          CupertinoIcons.arrow_left,
+          color: color ?? context.onSurface,
         ),
+
         padding: EdgeInsets.zero,
+
         constraints: const BoxConstraints(),
+
         splashRadius: 22,
       ),
     );

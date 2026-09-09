@@ -8,140 +8,132 @@ import 'package:flutter/material.dart';
 class AuthScaffold extends StatelessWidget {
   const AuthScaffold({
     super.key,
-    required this.header,
+    this.appHeader,
+    this.header,
     required this.body,
-    required this.footer,
+    this.footer,
     this.showBackButton = false,
   });
 
-  final Widget header;
+  final Widget? appHeader;
+  final Widget? header;
   final Widget body;
-  final Widget footer;
+  final Widget? footer;
   final bool showBackButton;
 
   @override
   Widget build(BuildContext context) {
     AppResponsive.init(context);
 
-   
+    final theme = context.theme;
+    final isDark = theme.brightness == Brightness.dark;
+
+    final gradientColors = isDark
+        ? [
+            context.surface,
+            context.black,
+            context.surface,
+          ]
+        : [
+            context.lightBlue.withOpacity(0.5),
+            context.offWhite.withOpacity(0.5),
+            context.reacher,
+          ];
+
+    final bubbleColor = isDark
+        ? context.primary.withOpacity(0.08)
+        : context.lightBlue.withOpacity(0.5);
 
     return Scaffold(
-     
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    context.offWhite,
-                    context.lightBlue,
-                    context.reacher,
-                  ],
-                  stops: const [0.0, 0.5, 1.0],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: gradientColors,
+            stops: const [0.0, 0.5, 1.0],
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Top-right background bubble
+            Positioned(
+              top: -100,
+              right: -80,
+              child: Container(
+                width: 290,
+                height: 290,
+                decoration: BoxDecoration(
+                  color: bubbleColor,
+                  shape: BoxShape.circle,
                 ),
               ),
-              child: Stack(
-                children: [
-                  // Top-right light blue bubble
-                  Positioned(
-                    top: -100,
-                    right: -80,
-                    child: Container(
-                      width: 290,
-                      height: 290,
-                      decoration: BoxDecoration(
-                        color: context.offWhite.withOpacity(0.5),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
+            ),
 
-                  // Bottom-left off-white/white bubble
-                  Positioned(
-                    bottom: -110,
-                    left: -90,
-                    child: Container(
-                      width: 310,
-                      height: 310,
-                      decoration: BoxDecoration(
-                        color: context.lightBlue,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
+            // Bottom-left background bubble
+            Positioned(
+              bottom: -110,
+              left: -90,
+              child: Container(
+                width: 310,
+                height: 310,
+                decoration: BoxDecoration(
+                  color: bubbleColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
 
-                  // Mid-left accent (Medium blue)
-                  Positioned(
-                    top: 220,
-                    left: -40,
-                    child: Container(
-                      width: 110,
-                      height: 110,
-                      decoration: BoxDecoration(
-                        color: context.lightBlue,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-
-                  // Bottom-right accent (Off-white / light tint)
-                  Positioned(
-                    bottom: 150,
-                    right: -40,
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: context.offWhite,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-
-                  SingleChildScrollView(
-                    child: AppPadding(
-                      horizontal: 6.4,
-                      vertical: 2.0,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight - 24,
-                        ),
-                        child: IntrinsicHeight(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+            // Main content
+            CustomScrollView(
+              slivers: [
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: AppPadding(
+                    horizontal: 3,
+                    vertical: 5.0,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center, // Center ma rakhna ko lagi (Optional)
+                      children: [
+                        // App header / Back button
+                        if (showBackButton || appHeader != null) ...[
+                          Row(
                             children: [
-                              if (showBackButton)
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child:CustomBackButton()
+                              if (showBackButton) ...[
+                                const CustomBackButton(),
+                                const HSpace(1.5),
+                              ],
+                              if (appHeader != null)
+                                Expanded(
+                                  child: appHeader!,
                                 ),
-
-                              const VSpace(1),
-
-                              header,
-
-                              const VSpace(3.5),
-
-                              body,
-
-                              const Spacer(),
-
-                              const VSpace(2),
-
-                              footer,
                             ],
                           ),
-                        ),
-                      ),
+                          const VSpace(2),
+                        ],
+
+                        // Page header
+                        if (header != null) ...[
+                          header!,
+                          const VSpace(2),
+                        ],
+
+                        // Body (Expanded hataeko, ab yo aafno content anusar matra huncha)
+                        body,
+
+                        // Footer
+                        if (footer != null) ...[
+                          const VSpace(2),
+                          footer!,
+                        ],
+                      ],
                     ),
                   ),
-                ],
-              ),
-            );
-          },
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

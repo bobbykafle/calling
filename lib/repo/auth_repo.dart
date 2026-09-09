@@ -43,16 +43,22 @@ class AuthRepository {
     required String password,
     String? photoPath,
   }) async {
+    print('🟡 STEP 1: creating firebase auth user...');
     final credential = await _firebaseAuth.createUserWithEmailAndPassword(
       email: email.trim(),
       password: password,
     );
+    print('🟢 STEP 2: firebase auth user created: ${credential.user!.uid}');
 
     final uid = credential.user!.uid;
     String photoUrl = '';
 
     if (photoPath != null && photoPath.isNotEmpty) {
+      print('🟡 STEP 3: uploading photo to cloudinary...');
       photoUrl = await _uploadToCloudinary(photoPath) ?? '';
+      print('🟢 STEP 4: photo upload finished: $photoUrl');
+    } else {
+      print('⚪ STEP 3-4: no photo selected, skipping upload');
     }
 
     final userModel = UserModel(
@@ -66,7 +72,9 @@ class AuthRepository {
       createdAt: DateTime.now(),
     );
 
+    print('🟡 STEP 5: writing user doc to firestore...');
     await _firestore.collection('users').doc(uid).set(userModel.toMap());
+    print('🟢 STEP 6: firestore write done — register() complete!');
     return userModel;
   }
 
@@ -91,7 +99,9 @@ class AuthRepository {
       if (response.statusCode == 200) {
         return response.data['secure_url'] as String?;
       }
-    } catch (_) {}
+    } catch (e) {
+      print('🔴 CLOUDINARY UPLOAD FAILED: $e');
+    }
     return null;
   }
 
