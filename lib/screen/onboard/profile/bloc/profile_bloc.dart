@@ -7,7 +7,8 @@ import 'profile_state.dart';
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final ProfileRepository _profileRepository;
   StreamSubscription? _profileSubscription;
- ProfileRepository get profileRepository => _profileRepository;
+  ProfileRepository get profileRepository => _profileRepository;
+  
   ProfileBloc(this._profileRepository) : super(ProfileInitial()) {
     on<LoadProfile>(_onLoadProfile);
     on<ProfileUpdated>(_onProfileUpdated);

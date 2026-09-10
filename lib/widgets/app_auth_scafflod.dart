@@ -94,9 +94,9 @@ class AuthScaffold extends StatelessWidget {
                     vertical: 5.0,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center, // Center ma rakhna ko lagi (Optional)
+
                       children: [
-                        // App header / Back button
+                     
                         if (showBackButton || appHeader != null) ...[
                           Row(
                             children: [

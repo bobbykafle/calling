@@ -19,6 +19,7 @@ class CustomButton extends StatelessWidget {
     this.textColor,
     this.textStyle,
     this.alignment = Alignment.center,
+    this.backgroundColor,
   });
 
   factory CustomButton.text({
@@ -60,6 +61,7 @@ class CustomButton extends StatelessWidget {
   final Color? textColor;
   final TextStyle? textStyle;
   final Alignment alignment;
+  final Color? backgroundColor;
 
   bool get _isInteractive => isEnabled && !isLoading && onPressed != null;
 
@@ -71,7 +73,8 @@ class CustomButton extends StatelessWidget {
 
     final isPrimary = variant == CustomButtonVariant.primary;
 
-    final effectiveTextStyle = textStyle ??
+    final effectiveTextStyle =
+        textStyle ??
         context.titleSB.copyWith(
           color: textColor ?? (isPrimary ? context.white : context.primaryBlue),
         );
@@ -90,17 +93,10 @@ class CustomButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (icon != null) ...[
-                Icon(
-                  icon,
-                  size: 20,
-                  color: effectiveTextStyle.color,
-                ),
+                Icon(icon, size: 20, color: effectiveTextStyle.color),
                 const SizedBox(width: 8),
               ],
-              Text(
-                text,
-                style: effectiveTextStyle,
-              ),
+              Text(text, style: effectiveTextStyle),
               if (suffixIcon != null) ...[
                 const SizedBox(width: 8),
                 suffixIcon!,
@@ -115,8 +111,9 @@ class CustomButton extends StatelessWidget {
           ? ElevatedButton(
               onPressed: _isInteractive ? onPressed : null,
               style: ElevatedButton.styleFrom(
-              backgroundColor: context.primaryBlue,
-                disabledBackgroundColor: context.primaryBlue.withOpacity(0.4),
+                backgroundColor: backgroundColor ?? context.primary,
+                disabledBackgroundColor: (backgroundColor ?? context.primary)
+                    .withOpacity(0.4),
                 foregroundColor: context.white,
                 elevation: 0,
                 shadowColor: Colors.transparent,
@@ -134,7 +131,8 @@ class CustomButton extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: textColor ?? context.primaryBlue,
                 side: BorderSide(
-                  color: borderColor ??
+                  color:
+                      borderColor ??
                       (_isInteractive
                           ? context.primaryBlue
                           : context.hintColor.withOpacity(0.5)),
@@ -147,14 +145,12 @@ class CustomButton extends StatelessWidget {
             ),
     );
 
-    return Align(
-      alignment: alignment,
-      child: button,
-    );
+    return Align(alignment: alignment, child: button);
   }
 
   Widget _buildTextButton(BuildContext context) {
-    final effectiveTextStyle = textStyle ??
+    final effectiveTextStyle =
+        textStyle ??
         context.labelMR.copyWith(
           fontWeight: FontWeight.bold,
           color: textColor ?? context.primaryBlue,
@@ -175,21 +171,11 @@ class CustomButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Icon(
-                icon,
-                size: 16,
-                color: effectiveTextStyle.color,
-              ),
+              Icon(icon, size: 16, color: effectiveTextStyle.color),
               const SizedBox(width: 6),
             ],
-            Text(
-              text,
-              style: effectiveTextStyle,
-            ),
-            if (suffixIcon != null) ...[
-              const SizedBox(width: 6),
-              suffixIcon!,
-            ],
+            Text(text, style: effectiveTextStyle),
+            if (suffixIcon != null) ...[const SizedBox(width: 6), suffixIcon!],
           ],
         ),
       ),

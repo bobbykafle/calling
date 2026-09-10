@@ -9,4 +9,5 @@ class AppRoutes {
   static const String resetPassword = '/reset-password';
   static const String home = '/home';
   static const String mainshall = '/main-shall';
+  static const String contacts = '/contacts';
 }

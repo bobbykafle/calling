@@ -1,31 +1,41 @@
 import 'package:connectcall/models/user_model.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class ContactState extends Equatable {
-  const ContactState();
+enum ContactStatus { initial, loading, loaded, failure }
 
-  @override
-  List<Object?> get props => [];
-}
-
-class ContactInitial extends ContactState {}
-
-class ContactLoading extends ContactState {}
-
-class ContactLoaded extends ContactState {
+class ContactState extends Equatable {
+  final ContactStatus status;
   final List<UserModel> users;
+  final String query;
+  final String? errorMessage;
 
-  const ContactLoaded(this.users);
+  const ContactState({
+    this.status = ContactStatus.initial,
+    this.users = const [],
+    this.query = '',
+    this.errorMessage,
+  });
+
+  List<UserModel> get filteredUsers {
+    if (query.isEmpty) return users;
+    final q = query.toLowerCase();
+    return users.where((u) => u.name.toLowerCase().contains(q)).toList();
+  }
+
+  ContactState copyWith({
+    ContactStatus? status,
+    List<UserModel>? users,
+    String? query,
+    String? errorMessage,
+  }) {
+    return ContactState(
+      status: status ?? this.status,
+      users: users ?? this.users,
+      query: query ?? this.query,
+      errorMessage: errorMessage,
+    );
+  }
 
   @override
-  List<Object?> get props => [users];
-}
-
-class ContactError extends ContactState {
-  final String message;
-
-  const ContactError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [status, users, query, errorMessage];
 }

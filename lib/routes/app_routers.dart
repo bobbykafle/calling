@@ -1,13 +1,18 @@
+import 'package:connectcall/repo/contract_repo.dart';
 import 'package:connectcall/screen/auth/forgot_scren.dart';
 import 'package:connectcall/screen/auth/login_screen.dart';
 import 'package:connectcall/screen/auth/otpp_screen.dart';
 import 'package:connectcall/screen/auth/register_screen.dart';
 import 'package:connectcall/screen/auth/update_screen.dart';
+import 'package:connectcall/screen/onboard/contact/bloc/contact_bloc.dart';
+import 'package:connectcall/screen/onboard/contact/bloc/contact_event.dart';
+import 'package:connectcall/screen/onboard/contact/contact_screen.dart';
 import 'package:connectcall/screen/onboard/mainshall/main_shall_screen.dart';
 import 'package:connectcall/screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:connectcall/routes/app_routes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppRouter {
   AppRouter._();
@@ -38,6 +43,15 @@ class AppRouter {
 
       case AppRoutes.home:
         return _page(const MainShell(), settings);
+      
+      case AppRoutes.contacts:
+  return _page(
+    BlocProvider(
+      create: (_) => ContactBloc(ContactRepository())..add(LoadContacts()),
+      child: const ContactsScreen(),
+    ),
+    settings,
+  );
 
       default:
         return _page(

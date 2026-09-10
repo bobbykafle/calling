@@ -1,11 +1,16 @@
 import 'package:connectcall/repo/profile_repo.dart';
 import 'package:connectcall/routes/app_routes.dart';
+import 'package:connectcall/screen/auth/update_screen.dart';
 import 'package:connectcall/screen/onboard/profile/bloc/profile_bloc.dart';
 import 'package:connectcall/screen/onboard/profile/bloc/profile_event.dart';
 import 'package:connectcall/screen/onboard/profile/bloc/profile_state.dart';
+import 'package:connectcall/utils/build_context.dart';
 import 'package:connectcall/widgets/app_auth_scafflod.dart';
+import 'package:connectcall/widgets/app_button.dart';
 import 'package:connectcall/widgets/app_header.dart';
+import 'package:connectcall/widgets/app_space.dart';
 import 'package:connectcall/widgets/edit_profile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,63 +32,110 @@ class _ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AuthScaffold(
-      appHeader: CustomHeader(title: "profile"),
+      appHeader: const CustomHeader(title: 'profile'),
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state is ProfileLoggedOut) {
-            Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.login,
+              (_) => false,
+            );
           } else if (state is ProfileError) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(content: Text(state.message)));
+              ..showSnackBar(
+                SnackBar(
+                  backgroundColor: context.error,
+                  content: Text(
+                    state.message,
+                    style: context.labelMR.copyWith(color: context.onError),
+                  ),
+                ),
+              );
           }
         },
         builder: (context, state) {
           if (state is ProfileLoading || state is ProfileInitial) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(color: context.primary),
+            );
           }
+
           if (state is ProfileLoaded) {
             final user = state.user;
+
             return SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
                   const SizedBox(height: 12),
+
+                  // Profile picture
                   GestureDetector(
                     onTap: () => _goToEditProfile(context, user),
                     child: Stack(
                       children: [
                         CircleAvatar(
                           radius: 52,
-                          backgroundImage:
-                              user.photoUrl.isNotEmpty ? NetworkImage(user.photoUrl) : null,
+                          backgroundColor: context.primary.withOpacity(0.12),
+                          backgroundImage: user.photoUrl.isNotEmpty
+                              ? NetworkImage(user.photoUrl)
+                              : null,
                           child: user.photoUrl.isEmpty
                               ? Text(
-                                  user.name.isNotEmpty ? user.name[0].toUpperCase() : '?',
-                                  style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                                  user.name.isNotEmpty
+                                      ? user.name[0].toUpperCase()
+                                      : '?',
+                                  style: context.headlineSL.copyWith(
+                                    color: context.primary,
+                                  ),
                                 )
                               : null,
                         ),
+
+                        // Camera button
                         Positioned(
                           right: 0,
                           bottom: 0,
                           child: CircleAvatar(
                             radius: 16,
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            child: const Icon(Icons.camera_alt, size: 16, color: Colors.white),
+                            backgroundColor: context.primary,
+                            child: Icon(
+                              Icons.camera_alt,
+                              size: 16,
+                              color: context.onPrimary,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  Text(user.name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
+
+                  const VSpace(5),
+
+                  // Name
+                  Text(
+                    user.name,
+                    style: context.titleLR.copyWith(
+                      color: context.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const VSpace(1),
+
+                  // Email / phone
                   Text(
                     user.email.isNotEmpty ? user.email : user.phone,
-                    style: const TextStyle(color: Colors.grey),
+                    style: context.bodySSB.copyWith(
+                      color: context.onSurface.withOpacity(0.65),
+                    ),
                   ),
-                  const SizedBox(height: 8),
+
+                  const VSpace(2),
+
+                  // Online status
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -92,45 +144,56 @@ class _ProfileView extends StatelessWidget {
                         height: 8,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: user.isOnline ? Colors.green : Colors.grey,
+                          color: user.isOnline
+                              ? Colors.green
+                              : context.onSurface.withOpacity(0.4),
                         ),
                       ),
                       const SizedBox(width: 6),
                       Text(
                         user.isOnline ? 'Online' : 'Offline',
-                        style: TextStyle(
-                          color: user.isOnline ? Colors.green : Colors.grey,
-                          fontSize: 13,
+                        style: context.labelMB.copyWith(
+                          color: user.isOnline
+                              ? Colors.green
+                              : context.onSurface.withOpacity(0.55),
                         ),
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 28),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      icon: const Icon(Icons.edit_outlined),
-                      label: const Text('Edit Profile'),
-                      onPressed: () => _goToEditProfile(context, user),
-                    ),
+                  CustomButton(
+                    variant: CustomButtonVariant.secondary,
+                    text: "Edit Profile",
+                    onPressed: () => _goToEditProfile(context, user),
+                    icon: CupertinoIcons.pencil_circle,
                   ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red.shade400,
-                        foregroundColor: Colors.white,
+
+                  const VSpace(2),
+                  CustomButton(
+                    variant: CustomButtonVariant.secondary,
+                    text: "Change Password",
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ResetPasswordScreen(),
                       ),
-                      icon: const Icon(Icons.logout),
-                      label: const Text('Logout'),
-                      onPressed: () => _confirmLogout(context),
                     ),
+                    icon: CupertinoIcons.lock,
+                  ),
+                  const VSpace(2),
+                  CustomButton(
+                    variant: CustomButtonVariant.primary,
+                    backgroundColor: context.error,
+                    text: 'Logout',
+                    onPressed: () => _confirmLogout(context),
+                    icon: CupertinoIcons.square_arrow_right,
                   ),
                 ],
               ),
             );
           }
+
           return const SizedBox.shrink();
         },
       ),
@@ -139,6 +202,7 @@ class _ProfileView extends StatelessWidget {
 
   void _goToEditProfile(BuildContext context, dynamic user) {
     final profileBloc = context.read<ProfileBloc>();
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -154,16 +218,41 @@ class _ProfileView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Log out?'),
-        content: const Text('You will need to log in again to make calls.'),
+        backgroundColor: context.surface,
+
+        title: Center(
+          child: Text(
+            'Log out?',
+            style: context.titleMR.copyWith(color: context.onSurface),
+          ),
+        ),
+
+        content: Text(
+          'You will need to log in again to make calls.',
+          style: context.bodySSB.copyWith(
+            color: context.onSurface.withOpacity(0.7),
+          ),
+        ),
+
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(
+              'Cancel',
+              style: context.labelMB.copyWith(color: context.primary),
+            ),
+          ),
+
           TextButton(
             onPressed: () {
               Navigator.pop(dialogContext);
+
               context.read<ProfileBloc>().add(const LogoutRequested());
             },
-            child: const Text('Log Out'),
+            child: Text(
+              'Log Out',
+              style: context.labelMB.copyWith(color: context.error),
+            ),
           ),
         ],
       ),

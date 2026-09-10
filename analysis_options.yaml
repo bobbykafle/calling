@@ -11,6 +11,9 @@ analyzer:
   errors:
     depend_on_referenced_packages: ignore
     deprecated_member_use: ignore
+    prefer_interpolation_to_compose_strings: ignore
+    unnecessary_non_null_assertion: ignore
+    unused_import: ignore
     unused_local_variable: ignore
   exclude:
     - build/**

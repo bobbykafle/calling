@@ -1,8 +1,14 @@
+import 'package:connectcall/repo/contract_repo.dart';
 import 'package:connectcall/screen/onboard/contact/contact_screen.dart';
+import 'package:connectcall/screen/onboard/home/home_screen.dart';
 import 'package:connectcall/screen/onboard/profile/profile_screen.dart';
-import 'package:connectcall/utils/build_context.dart';
-import 'package:connectcall/widgets/app_buttomnav.dart'; 
+import 'package:connectcall/widgets/app_buttomnav.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:connectcall/repo/search_repo.dart';
+import 'package:connectcall/screen/onboard/search/bloc/search_bloc.dart';
+import 'package:connectcall/screen/onboard/contact/bloc/contact_bloc.dart';
+import 'package:connectcall/screen/onboard/contact/bloc/contact_event.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -14,81 +20,44 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    HomeScreen(),
-    ContactsScreen(),
-    CallsScreen(), 
-    ProfileScreen(), 
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
- 
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
-    );
-  }
-}
-
-// 1. Home Screen (Index 0)
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.background,
-      appBar: AppBar(
-        title: Text(
-          'Home Dashboard',
-          style: TextStyle(color: context.black),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => SearchBloc(SearchRepository())),
+        BlocProvider(
+          create: (_) => ContactBloc(ContactRepository())..add(LoadContacts()), // ✅ fix
         ),
-        backgroundColor: context.white,
-        elevation: 0,
-      ),
-      body: Center(
-        child: Text(
-          'Home Screen',
-          style: TextStyle(color: context.primaryBlue, fontSize: 18, fontWeight: FontWeight.bold),
+        // Add more blocs as needed
+      ],
+      child: Scaffold(
+        body: IndexedStack(
+          index: _currentIndex,
+          children: const [
+            HomeScreen(),
+            ContactsScreen(),
+            CallsScreen(),
+            ProfileScreen(),
+          ],
+        ),
+        bottomNavigationBar: CustomBottomNavBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
         ),
       ),
     );
   }
 }
 
-// 2. Calls Screen (Index 2 - Custom Bottom Nav ma 'Calls' vanera xa)
 class CallsScreen extends StatelessWidget {
   const CallsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.background,
-      appBar: AppBar(
-        title: Text(
-          'Calls Screen',
-          style: TextStyle(color: context.black),
-        ),
-        backgroundColor: context.white,
-        elevation: 0,
-      ),
-      body: Center(
-        child: Text(
-          'Calls Screen (Grid)',
-          style: TextStyle(color: context.primaryBlue, fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
+    return const Placeholder();
   }
 }

@@ -2,9 +2,11 @@ import 'package:connectcall/core/theme/app_theme.dart';
 import 'package:connectcall/core/theme/bloc/theme_bloc.dart';
 import 'package:connectcall/firebase_options.dart';
 import 'package:connectcall/repo/auth_repo.dart';
+import 'package:connectcall/repo/profile_repo.dart';
 import 'package:connectcall/routes/app_routers.dart';
 import 'package:connectcall/routes/app_routes.dart';
 import 'package:connectcall/screen/auth/bloc/auth_bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +15,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
+final dio = Dio();
+final profileRepo = ProfileRepository(dio: dio);
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");

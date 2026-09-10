@@ -24,5 +24,10 @@ class ProfileError extends ProfileState {
   @override
   List<Object?> get props => [message];
 }
-
+class ProfileSaving extends ProfileState {
+  final UserModel user;
+  const ProfileSaving(this.user);
+  @override
+  List<Object?> get props => [user];
+}
 class ProfileLoggedOut extends ProfileState {}
