@@ -1,9 +1,13 @@
+import 'package:connectcall/repo/call_repo.dart';
 import 'package:connectcall/repo/contract_repo.dart';
 import 'package:connectcall/screen/auth/forgot_scren.dart';
 import 'package:connectcall/screen/auth/login_screen.dart';
 import 'package:connectcall/screen/auth/otpp_screen.dart';
 import 'package:connectcall/screen/auth/register_screen.dart';
 import 'package:connectcall/screen/auth/update_screen.dart';
+import 'package:connectcall/screen/onboard/calls/bloc/calls_bloc.dart';
+import 'package:connectcall/screen/onboard/calls/bloc/calls_event.dart';
+import 'package:connectcall/screen/onboard/calls/call_history_screen.dart';
 import 'package:connectcall/screen/onboard/contact/bloc/contact_bloc.dart';
 import 'package:connectcall/screen/onboard/contact/bloc/contact_event.dart';
 import 'package:connectcall/screen/onboard/contact/contact_screen.dart';
@@ -52,7 +56,11 @@ class AppRouter {
     ),
     settings,
   );
-
+     case AppRoutes.calls:
+     return _page(BlocProvider(
+  create: (_) => CallLogBloc(CallLogRepository())..add(LoadCallLogs()),
+  child: const CallLogsScreen(),
+), settings);
       default:
         return _page(
           Scaffold(

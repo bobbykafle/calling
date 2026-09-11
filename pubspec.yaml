@@ -33,6 +33,8 @@ dependencies:
   zego_uikit_signaling_plugin: ^2.8.21
   zego_zim: ^2.29.0+1
   image_picker: ^1.2.3
+  intl: ^0.20.3
+  zego_uikit: ^2.29.2
   
   
 

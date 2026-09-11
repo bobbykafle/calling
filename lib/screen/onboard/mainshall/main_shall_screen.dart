@@ -1,4 +1,8 @@
+import 'package:connectcall/repo/call_repo.dart';
 import 'package:connectcall/repo/contract_repo.dart';
+import 'package:connectcall/screen/onboard/calls/bloc/calls_bloc.dart';
+import 'package:connectcall/screen/onboard/calls/bloc/calls_event.dart';
+import 'package:connectcall/screen/onboard/calls/call_history_screen.dart';
 import 'package:connectcall/screen/onboard/contact/contact_screen.dart';
 import 'package:connectcall/screen/onboard/home/home_screen.dart';
 import 'package:connectcall/screen/onboard/profile/profile_screen.dart';
@@ -26,8 +30,12 @@ class _MainShellState extends State<MainShell> {
       providers: [
         BlocProvider(create: (_) => SearchBloc(SearchRepository())),
         BlocProvider(
-          create: (_) => ContactBloc(ContactRepository())..add(LoadContacts()), // ✅ fix
+          create: (_) => ContactBloc(ContactRepository())..add(LoadContacts()), 
         ),
+        BlocProvider(
+  create: (_) => CallLogBloc(CallLogRepository())..add(LoadCallLogs()),
+  child: const CallLogsScreen(),
+),
         // Add more blocs as needed
       ],
       child: Scaffold(
@@ -36,7 +44,7 @@ class _MainShellState extends State<MainShell> {
           children: const [
             HomeScreen(),
             ContactsScreen(),
-            CallsScreen(),
+            CallLogsScreen(),
             ProfileScreen(),
           ],
         ),
@@ -53,11 +61,4 @@ class _MainShellState extends State<MainShell> {
   }
 }
 
-class CallsScreen extends StatelessWidget {
-  const CallsScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}

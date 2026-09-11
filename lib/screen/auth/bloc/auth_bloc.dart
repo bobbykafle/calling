@@ -1,12 +1,11 @@
+import 'dart:async';
 import 'package:connectcall/repo/auth_repo.dart';
+import 'package:connectcall/service/zego_initialization.dart';
 import 'package:connectcall/utils/formz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:connectcall/models/user_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
-import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
-import 'dart:async';
+
 part 'auth_event.dart';
 part 'auth_state.dart';
 
@@ -29,31 +28,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   final AuthRepository _authRepository;
 
-
-  Future<void> _initCallInvitation(UserModel user) async {
-    await ZegoUIKitPrebuiltCallInvitationService().init(
-      appID: int.parse(dotenv.env['ZEGO_APP_ID']!),
-      appSign: dotenv.env['ZEGO_APP_SIGN']!,
-      userID: user.uid,
-      userName: user.name,
-      plugins: [ZegoUIKitSignalingPlugin()],
-      requireConfig: (ZegoCallInvitationData data) {
-        final isGroup = data.invitees.length > 1;
-        return isGroup
-            ? (data.type == ZegoCallType.videoCall
-                ? ZegoUIKitPrebuiltCallConfig.groupVideoCall()
-                : ZegoUIKitPrebuiltCallConfig.groupVoiceCall())
-            : (data.type == ZegoCallType.videoCall
-                ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
-                : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall());
-      },
-    );
-  }
-
-  Future<void> _deinitCallInvitation() async {
-    await ZegoUIKitPrebuiltCallInvitationService().uninit();
-  }
-
   Future<void> _onCheckRequested(
       AuthCheckRequested event, Emitter<AuthState> emit) async {
     emit(state.copyWith(status: AuthStatus.loading));
@@ -64,7 +38,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
     try {
       final user = await _authRepository.fetchUserModel(firebaseUser.uid);
-      await _initCallInvitation(user);
+      await ZegoCallManager.init(user);
       emit(state.copyWith(status: AuthStatus.authenticated, user: user));
     } catch (_) {
       emit(state.copyWith(status: AuthStatus.unauthenticated));
@@ -96,7 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final user = await _authRepository.login(
           email: email.value, password: password.value);
-      await _initCallInvitation(user);
+      await ZegoCallManager.init(user);
       emit(state.copyWith(status: AuthStatus.authenticated, user: user));
     } catch (e) {
       emit(state.copyWith(
@@ -133,47 +107,47 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     ));
   }
 
-Future<void> _onSignupSubmitted(
-    SignupSubmitted event, Emitter<AuthState> emit) async {
-  final name = NameInput.dirty(value: state.signupName.value);
-  final email = EmailInput.dirty(value: state.signupEmail.value);
-  final password = PasswordInput.dirty(value: state.signupPassword.value);
-  final confirm = ConfirmPasswordInput.dirty(
-    value: state.signupConfirmPassword.value,
-    password: password.value,
-  );
-
-  emit(state.copyWith(
-    signupName: name,
-    signupEmail: email,
-    signupPassword: password,
-    signupConfirmPassword: confirm,
-    isSignupSubmitted: true,
-  ));
-
-  if (!state.isSignupValid) return;
-
-  emit(state.copyWith(status: AuthStatus.loading));
-  try {
-    final user = await _authRepository.register(
-      name: name.value,
-      email: email.value,
+  Future<void> _onSignupSubmitted(
+      SignupSubmitted event, Emitter<AuthState> emit) async {
+    final name = NameInput.dirty(value: state.signupName.value);
+    final email = EmailInput.dirty(value: state.signupEmail.value);
+    final password = PasswordInput.dirty(value: state.signupPassword.value);
+    final confirm = ConfirmPasswordInput.dirty(
+      value: state.signupConfirmPassword.value,
       password: password.value,
-      photoPath: state.signupPhotoPath,
     );
 
-    emit(state.copyWith(status: AuthStatus.authenticated, user: user));
-
-    unawaited(_initCallInvitation(user).catchError((e) {
-      // silent fail, auth flow lai affect gardaina
-    }));
-  } catch (e) {
     emit(state.copyWith(
-      status: AuthStatus.failure,
-      errorMessage: AuthRepository.messageFromAuthError(e),
+      signupName: name,
+      signupEmail: email,
+      signupPassword: password,
+      signupConfirmPassword: confirm,
+      isSignupSubmitted: true,
     ));
+
+    if (!state.isSignupValid) return;
+
+    emit(state.copyWith(status: AuthStatus.loading));
+    try {
+      final user = await _authRepository.register(
+        name: name.value,
+        email: email.value,
+        password: password.value,
+        photoPath: state.signupPhotoPath,
+      );
+
+      emit(state.copyWith(status: AuthStatus.authenticated, user: user));
+
+      unawaited(ZegoCallManager.init(user).catchError((e) {
+        // silent fail, auth flow lai affect gardaina
+      }));
+    } catch (e) {
+      emit(state.copyWith(
+        status: AuthStatus.failure,
+        errorMessage: AuthRepository.messageFromAuthError(e),
+      ));
+    }
   }
-}
 
   void _onForgotPasswordEmailChanged(
       ForgotPasswordEmailChanged e, Emitter<AuthState> emit) {
@@ -204,7 +178,7 @@ Future<void> _onSignupSubmitted(
 
   Future<void> _onLogoutRequested(
       LogoutRequested event, Emitter<AuthState> emit) async {
-    await _deinitCallInvitation();
+    await ZegoCallManager.deinit();
     await _authRepository.logout();
     emit(const AuthState(status: AuthStatus.unauthenticated));
   }

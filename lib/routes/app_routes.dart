@@ -10,4 +10,5 @@ class AppRoutes {
   static const String home = '/home';
   static const String mainshall = '/main-shall';
   static const String contacts = '/contacts';
+  static const String calls = '/calls';
 }
