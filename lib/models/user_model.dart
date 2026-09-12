@@ -10,6 +10,7 @@ class UserModel extends Equatable {
   final bool isOnline;
   final String? fcmToken;
   final DateTime createdAt;
+  final List<String> blockedUserIds;
 
   const UserModel({
     required this.uid,
@@ -19,6 +20,7 @@ class UserModel extends Equatable {
     this.photoUrl = '',
     this.isOnline = false,
     this.fcmToken,
+    this.blockedUserIds = const [],
     required this.createdAt,
   });
 
@@ -28,6 +30,9 @@ class UserModel extends Equatable {
     String? photoUrl,
     bool? isOnline,
     String? fcmToken,
+    List<String>? blockedUserIds,
+   
+
   }) {
     return UserModel(
       uid: uid,
@@ -38,6 +43,7 @@ class UserModel extends Equatable {
       isOnline: isOnline ?? this.isOnline,
       fcmToken: fcmToken ?? this.fcmToken,
       createdAt: createdAt,
+      blockedUserIds: blockedUserIds ?? this.blockedUserIds,
     );
   }
 
@@ -51,6 +57,7 @@ class UserModel extends Equatable {
       'isOnline': isOnline,
       'fcmToken': fcmToken,
       'createdAt': Timestamp.fromDate(createdAt),
+      'blockedUserIds': blockedUserIds,
     };
   }
 
@@ -64,9 +71,10 @@ class UserModel extends Equatable {
       isOnline: map['isOnline'] as bool? ?? false,
       fcmToken: map['fcmToken'] as String?,
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      blockedUserIds: List<String>.from(map['blockedUserIds'] ?? []),
     );
   }
 
   @override
-  List<Object?> get props => [uid, name, email, phone, photoUrl, isOnline, fcmToken];
+  List<Object?> get props => [uid, name, email, phone, photoUrl, isOnline, fcmToken,blockedUserIds ];
 }

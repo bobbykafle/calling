@@ -4,6 +4,7 @@ import 'package:connectcall/routes/app_routes.dart';
 import 'package:connectcall/screen/auth/bloc/auth_bloc.dart';
 import 'package:connectcall/utils/build_context.dart';
 import 'package:connectcall/utils/custom_textfiled.dart';
+import 'package:connectcall/utils/photo_picker.dart';
 import 'package:connectcall/widgets/app_container.dart';
 import 'package:connectcall/widgets/app_auth_scafflod.dart';
 import 'package:connectcall/widgets/app_button.dart';
@@ -29,10 +30,7 @@ class SignupScreen extends StatelessWidget {
           );
         } else if (state.status == AuthStatus.failure &&
             state.errorMessage != null) {
-          AppTErrorNotification.show(
-            context,
-            message: state.errorMessage!,
-          );
+          AppTErrorNotification.show(context, message: state.errorMessage!);
         }
       },
       builder: (context, state) {
@@ -43,19 +41,18 @@ class SignupScreen extends StatelessWidget {
           header: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-                AppImageView(type: AppImageType.createAccount, height: 200),
+              AppImageView(type: AppImageType.createAccount, height: 200),
               const VSpace(2),
               Text(
                 'Create   Account'.toUpperCase(),
                 style: context.headlineLarge.copyWith(
-                  color: context.black,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const VSpace(1),
               Text(
                 'Sign up to start calling on Callly',
-                style: context.bodySSB.copyWith(color: context.white),
+                style: context.bodySSB.copyWith(color: context.lightBlue),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -63,32 +60,14 @@ class SignupScreen extends StatelessWidget {
           body: CustomAuthContainer(
             children: [
               Center(
-                child: GestureDetector(
-                  // TODO: hook this up to image_picker / file_picker and
-                  // dispatch SignupPhotoChanged(pickedPath).
-                  onTap: () {},
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: context.lightBlue,
-                      image: state.signupPhotoPath != null
-                          ? DecorationImage(
-                              image: AssetImage(state.signupPhotoPath!),
-                              fit: BoxFit.cover,
-                            )
-                          : null,
-                    ),
-                    child: state.signupPhotoPath == null
-                        ? Icon(
-                            CupertinoIcons.camera_fill,
-                            color: context.primaryBlue,
-                          )
-                        : null,
-                  ),
+                child: ProfilePhotoPicker(
+                  size: 80,
+                  onLocalPicked: (path) {
+                    context.read<AuthBloc>().add(SignupPhotoChanged(path));
+                  },
                 ),
               ),
+
               const VSpace(2),
               DecoratedTextField(
                 aboveText: 'Full Name',
@@ -96,8 +75,9 @@ class SignupScreen extends StatelessWidget {
                 textCapitalization: TextCapitalization.words,
                 prefixIcon: const Icon(CupertinoIcons.person_fill),
                 textInputAction: TextInputAction.next,
-                validationError:
-                    state.isSignupSubmitted ? state.signupName.error : null,
+                validationError: state.isSignupSubmitted
+                    ? state.signupName.error
+                    : null,
                 onChanged: (v) =>
                     context.read<AuthBloc>().add(SignupNameChanged(v)),
               ),
@@ -108,8 +88,9 @@ class SignupScreen extends StatelessWidget {
                 inputType: TextInputType.emailAddress,
                 prefixIcon: const Icon(CupertinoIcons.envelope_fill),
                 textInputAction: TextInputAction.next,
-                validationError:
-                    state.isSignupSubmitted ? state.signupEmail.error : null,
+                validationError: state.isSignupSubmitted
+                    ? state.signupEmail.error
+                    : null,
                 onChanged: (v) =>
                     context.read<AuthBloc>().add(SignupEmailChanged(v)),
               ),
@@ -136,9 +117,9 @@ class SignupScreen extends StatelessWidget {
                 validationError: state.isSignupSubmitted
                     ? state.signupConfirmPassword.error
                     : null,
-                onChanged: (v) => context
-                    .read<AuthBloc>()
-                    .add(SignupConfirmPasswordChanged(v)),
+                onChanged: (v) => context.read<AuthBloc>().add(
+                  SignupConfirmPasswordChanged(v),
+                ),
                 onFieldSubmitted: (_) =>
                     context.read<AuthBloc>().add(const SignupSubmitted()),
               ),
@@ -159,10 +140,7 @@ class SignupScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Already have an account?   ',
-                    style: context.labelMR.copyWith(color: context.black),
-                  ),
+                  Text('Already have an account?   ', style: context.labelMR),
                   CustomButton.text(
                     text: 'Log In'.toUpperCase(),
                     onPressed: () => Navigator.pushReplacementNamed(

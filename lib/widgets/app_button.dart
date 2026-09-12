@@ -111,12 +111,12 @@ class CustomButton extends StatelessWidget {
           ? ElevatedButton(
               onPressed: _isInteractive ? onPressed : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: backgroundColor ?? context.primary,
+                backgroundColor: backgroundColor ?? context.primaryBlue,
                 disabledBackgroundColor: (backgroundColor ?? context.primary)
                     .withOpacity(0.4),
                 foregroundColor: context.white,
                 elevation: 0,
-                shadowColor: Colors.transparent,
+                shadowColor: context.transparentColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
                   side: borderColor != null

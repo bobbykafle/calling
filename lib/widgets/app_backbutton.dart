@@ -19,8 +19,9 @@ class CustomBackButton extends StatelessWidget {
     return Padding(
       padding: padding,
       child: IconButton(
-        onPressed: onPressed ?? () => Navigator.of(context).pop(),
-
+        onPressed:
+            onPressed ??
+            () => Navigator.of(context).popUntil((route) => route.isFirst),
         icon: Icon(
           CupertinoIcons.arrow_left,
           color: color ?? context.onSurface,

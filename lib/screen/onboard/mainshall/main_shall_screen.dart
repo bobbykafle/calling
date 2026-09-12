@@ -1,10 +1,13 @@
 import 'package:connectcall/repo/call_repo.dart';
 import 'package:connectcall/repo/contract_repo.dart';
+import 'package:connectcall/repo/profile_repo.dart';
 import 'package:connectcall/screen/onboard/calls/bloc/calls_bloc.dart';
 import 'package:connectcall/screen/onboard/calls/bloc/calls_event.dart';
 import 'package:connectcall/screen/onboard/calls/call_history_screen.dart';
 import 'package:connectcall/screen/onboard/contact/contact_screen.dart';
 import 'package:connectcall/screen/onboard/home/home_screen.dart';
+import 'package:connectcall/screen/onboard/profile/bloc/profile_bloc.dart';
+import 'package:connectcall/screen/onboard/profile/bloc/profile_event.dart';
 import 'package:connectcall/screen/onboard/profile/profile_screen.dart';
 import 'package:connectcall/widgets/app_buttomnav.dart';
 import 'package:flutter/material.dart';
@@ -29,14 +32,19 @@ class _MainShellState extends State<MainShell> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => SearchBloc(SearchRepository())),
-        BlocProvider(
-          create: (_) => ContactBloc(ContactRepository())..add(LoadContacts()), 
-        ),
+       BlocProvider(
+  create: (_) => ContactBloc(
+    ContactRepository(),
+    CallLogRepository(), 
+  )..add(LoadContacts()),
+),
         BlocProvider(
   create: (_) => CallLogBloc(CallLogRepository())..add(LoadCallLogs()),
   child: const CallLogsScreen(),
 ),
-        // Add more blocs as needed
+   BlocProvider(
+      create: (_) => ProfileBloc(ProfileRepository())..add(LoadProfile()), 
+    )     
       ],
       child: Scaffold(
         body: IndexedStack(

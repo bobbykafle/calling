@@ -22,3 +22,9 @@ class ContactSearchQueryChanged extends ContactEvent {
   @override
   List<Object?> get props => [query];
 }
+class FrequentContactsUpdated extends ContactEvent {
+  final List<String> ids;
+  const FrequentContactsUpdated(this.ids);
+  @override
+  List<Object?> get props => [ids];
+}

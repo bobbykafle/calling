@@ -19,7 +19,8 @@ class ProfileUpdated extends ProfileEvent {
 class EditProfileSubmitted extends ProfileEvent {
   final String name;
   final String? photoUrl;
-  const EditProfileSubmitted({required this.name, this.photoUrl});
+  final String? email;
+  const EditProfileSubmitted({required this.name, this.photoUrl, this.email});
   @override
   List<Object?> get props => [name, photoUrl];
 }

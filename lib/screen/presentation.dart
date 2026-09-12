@@ -1,3 +1,4 @@
+import 'package:connectcall/utils/cache_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
@@ -26,11 +27,21 @@ class ZegoCallUiConfig {
     }
 
     config.avatarBuilder = (context, size, user, extraInfo) {
-      return CircleAvatar(
-        radius: size.width / 2,
-        backgroundImage: NetworkImage('https://yourserver.com/avatar/${user?.id}.png'),
-      );
-    };
+  final photoUrl = ZegoAvatarCache.get(user?.id);
+  return CircleAvatar(
+    radius: size.width / 2,
+    backgroundColor: Colors.grey.shade700,
+    backgroundImage: (photoUrl != null && photoUrl.isNotEmpty)
+        ? NetworkImage(photoUrl)
+        : null,
+    child: (photoUrl == null || photoUrl.isEmpty)
+        ? Text(
+            user?.name.isNotEmpty == true ? user!.name[0].toUpperCase() : '?',
+            style: const TextStyle(color: Colors.white, fontSize: 24),
+          )
+        : null,
+  );
+};
 
     config.foreground = _CallControlsOverlay(isVideo: isVideo);
 

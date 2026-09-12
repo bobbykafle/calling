@@ -7,12 +7,14 @@ class ContactState extends Equatable {
   final ContactStatus status;
   final List<UserModel> users;
   final String query;
+  final List<String> frequentUserIds;
   final String? errorMessage;
 
   const ContactState({
     this.status = ContactStatus.initial,
     this.users = const [],
     this.query = '',
+    this.frequentUserIds = const [], 
     this.errorMessage,
   });
 
@@ -22,20 +24,25 @@ class ContactState extends Equatable {
     return users.where((u) => u.name.toLowerCase().contains(q)).toList();
   }
 
+  List<UserModel> get frequentUsers =>
+      frequentUserIds.map((id) => users.firstWhere((u) => u.uid == id, orElse: () => users.first)).toList();
+
   ContactState copyWith({
     ContactStatus? status,
     List<UserModel>? users,
     String? query,
+    List<String>? frequentUserIds, 
     String? errorMessage,
   }) {
     return ContactState(
       status: status ?? this.status,
       users: users ?? this.users,
       query: query ?? this.query,
-      errorMessage: errorMessage,
+      frequentUserIds: frequentUserIds ?? this.frequentUserIds,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status, users, query, errorMessage];
+  List<Object?> get props => [status, users, query, frequentUserIds, errorMessage];
 }

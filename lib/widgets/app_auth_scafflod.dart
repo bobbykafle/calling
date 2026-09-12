@@ -56,7 +56,6 @@ class AuthScaffold extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Top-right background bubble
             Positioned(
               top: -100,
               right: -80,
@@ -70,7 +69,6 @@ class AuthScaffold extends StatelessWidget {
               ),
             ),
 
-            // Bottom-left background bubble
             Positioned(
               bottom: -110,
               left: -90,
@@ -119,12 +117,13 @@ class AuthScaffold extends StatelessWidget {
                           const VSpace(2),
                         ],
 
-                        // Body (Expanded hataeko, ab yo aafno content anusar matra huncha)
+                        // Body 
                         body,
+                       const Spacer(),
 
-                        // Footer
+                       //footer
                         if (footer != null) ...[
-                          const VSpace(2),
+                          
                           footer!,
                         ],
                       ],

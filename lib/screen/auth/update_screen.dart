@@ -39,7 +39,7 @@ class ResetPasswordScreen extends StatelessWidget {
               Text(
                 'New Password',
                 style: context.headlineML.copyWith(
-                  color: isDarkMode ? context.white : context.primaryBlue,
+                  color: context.primaryBlue,
                 ),
               ),
               const SizedBox(height: 6),

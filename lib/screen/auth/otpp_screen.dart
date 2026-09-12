@@ -50,10 +50,7 @@ class OtpScreen extends HookWidget {
           Navigator.pushReplacementNamed(context, AppRoutes.resetPassword);
         } else if (state.status == AuthStatus.failure &&
             state.errorMessage != null) {
-          AppTErrorNotification.show(
-            context,
-            message: state.errorMessage!,
-          );
+          AppTErrorNotification.show(context, message: state.errorMessage!);
         }
       },
       builder: (context, state) {
@@ -67,18 +64,17 @@ class OtpScreen extends HookWidget {
             children: [
               AppImageView(type: AppImageType.otp, height: 200),
 
-                const VSpace(2),
+              const VSpace(2),
               Text(
                 'Enter Code'.toUpperCase(),
                 style: context.headlineLarge.copyWith(
-                  color: context.black,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const VSpace(1),
               Text(
                 'We sent a 6-digit code to $email',
-                style: context.bodySSB.copyWith(color: context.white),
+                style: context.bodySSB.copyWith(color: context.lightBlue),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -99,10 +95,8 @@ class OtpScreen extends HookWidget {
                       width: 1.5,
                     ),
                   ),
-                  forceErrorState:
-                      state.isResetSubmitted && !state.otp.isValid,
-                  onChanged: (v) =>
-                      context.read<AuthBloc>().add(OtpChanged(v)),
+                  forceErrorState: state.isResetSubmitted && !state.otp.isValid,
+                  onChanged: (v) => context.read<AuthBloc>().add(OtpChanged(v)),
                   onCompleted: (v) {
                     context.read<AuthBloc>().add(OtpChanged(v));
                     context.read<AuthBloc>().add(const OtpVerifySubmitted());
@@ -114,15 +108,16 @@ class OtpScreen extends HookWidget {
                 child: secondsLeft.value > 0
                     ? Text(
                         'Resend code in ${secondsLeft.value}s',
-                        style: context.labelMR
-                            .copyWith(color: context.primaryBlue),
+                        style: context.labelMR.copyWith(
+                          color: context.primaryBlue,
+                        ),
                       )
                     : CustomButton.text(
                         text: 'Resend Code',
                         onPressed: () {
-                          context
-                              .read<AuthBloc>()
-                              .add(const ForgotPasswordOtpRequested());
+                          context.read<AuthBloc>().add(
+                            const ForgotPasswordOtpRequested(),
+                          );
                           secondsLeft.value = 30;
                         },
                       ),

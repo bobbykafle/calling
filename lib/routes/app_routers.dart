@@ -49,18 +49,24 @@ class AppRouter {
         return _page(const MainShell(), settings);
       
       case AppRoutes.contacts:
-  return _page(
-    BlocProvider(
-      create: (_) => ContactBloc(ContactRepository())..add(LoadContacts()),
-      child: const ContactsScreen(),
-    ),
-    settings,
-  );
-     case AppRoutes.calls:
-     return _page(BlocProvider(
-  create: (_) => CallLogBloc(CallLogRepository())..add(LoadCallLogs()),
-  child: const CallLogsScreen(),
-), settings);
+        return _page(
+          BlocProvider(
+           
+            create: (_) => ContactBloc(ContactRepository(), CallLogRepository())..add(LoadContacts()),
+            child: const ContactsScreen(),
+          ),
+          settings,
+        );
+        
+      case AppRoutes.calls:
+        return _page(
+          BlocProvider(
+            create: (_) => CallLogBloc(CallLogRepository())..add(LoadCallLogs()),
+            child: const CallLogsScreen(),
+          ), 
+          settings,
+        );
+
       default:
         return _page(
           Scaffold(

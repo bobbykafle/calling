@@ -48,14 +48,14 @@ class ForgotPasswordScreen extends StatelessWidget {
               Text(
                 'Forgot Password',
                 style: context.headlineLarge.copyWith(
-                  color: context.black,
+               
                   fontWeight: FontWeight.bold,
                 )
               ),
               const VSpace(1),
               Text(
                 "Enter your email and we'll send you a 6-digit code.",
-                 style: context.bodySSB.copyWith(color: context.white),
+                 style: context.bodySSB.copyWith(color: context.lightBlue),
                 textAlign: TextAlign.center,
               )
             ],
@@ -97,7 +97,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                 children: [
                   Text(
                     'Remembered Password?   ',
-                    style: context.labelMR.copyWith(color: context.black),
+                    style: context.labelMR,
                   ),
 
                   CustomButton.text(

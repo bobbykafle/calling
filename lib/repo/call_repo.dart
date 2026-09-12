@@ -48,4 +48,18 @@ class CallLogRepository {
         .snapshots()
         .map((snap) => snap.docs.map((d) => CallLog.fromMap(d.id, d.data())).toList());
   }
+Stream<List<String>> getFrequentContactIds({int limit = 5}) {
+  final ref = _logsRef;
+  if (ref == null) return const Stream.empty();
+  return ref.orderBy('timestamp', descending: true).limit(50).snapshots().map((snap) {
+    final counts = <String, int>{};
+    for (final doc in snap.docs) {
+      final uid = doc.data()['otherUserId'] as String? ?? '';
+      if (uid.isEmpty) continue;
+      counts[uid] = (counts[uid] ?? 0) + 1;
+    }
+    final sorted = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    return sorted.take(limit).map((e) => e.key).toList();
+  });
+}
 }

@@ -1,4 +1,5 @@
 import 'package:connectcall/core/theme/bloc/theme_bloc.dart';
+import 'package:connectcall/core/theme/bloc/theme_state.dart';
 import 'package:connectcall/utils/build_context.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -55,12 +56,38 @@ class AppHomeHeader extends StatelessWidget {
             ],
           ),
       
-          // Right: Theme Toggle Button
-          IconButton(
-            tooltip: isDark ? 'Switch to light mode' : 'Switch to dark mode',
-            icon: Icon(isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
-            onPressed: () => context.read<ThemeBloc>().add(const ThemeModeToggled()),
-          ),
+    BlocBuilder<ThemeBloc, ThemeState>(
+  builder: (context, themeState) {
+    return IconButton(
+      tooltip: themeState.mode == ThemeMode.system
+          ? 'System theme (Switch to Light)'
+          : themeState.mode == ThemeMode.light
+              ? 'Light mode (Switch to Dark)'
+              : 'Dark mode (Switch to System)',
+
+      icon: Icon(
+  themeState.mode == ThemeMode.light
+      ? Icons.light_mode_outlined
+      : Icons.dark_mode_outlined,
+),
+      //    themeState.mode == ThemeMode.system
+      // ? Theme.of(context).brightness == Brightness.dark
+      //     ? Icons.dark_mode_outlined
+      //     : Icons.light_mode_outlined
+      // : themeState.mode == ThemeMode.light
+      //     ? Icons.light_mode_outlined
+      //     : Icons.dark_mode_outlined,
+      // ),
+
+      onPressed: () {
+        context.read<ThemeBloc>().add(
+          const ThemeModeToggled(),
+        );
+      },
+    );
+  },
+)
+
         ],
       ),
     );

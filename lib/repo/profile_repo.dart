@@ -50,7 +50,7 @@ class ProfileRepository {
 
   Future<void> updateProfile({
     String? name,
-    String? phone,
+    String? email,
     String? photoUrl,
   }) async {
     final uid = currentUid;
@@ -62,8 +62,8 @@ class ProfileRepository {
       data['name'] = name.trim();
     }
 
-    if (phone != null) {
-      data['phone'] = phone.trim();
+    if (email != null) {
+      data['email'] = email.trim();
     }
 
     if (photoUrl != null) {

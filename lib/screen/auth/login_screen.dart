@@ -47,14 +47,14 @@ class LoginScreen extends StatelessWidget {
               Text(
                 'Welcome  Back'.toUpperCase(),
                 style: context.headlineLarge.copyWith(
-                  color: context.black,
+                  
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const VSpace(1),
               Text(
                 'Ready to chat? Log in to start your call.',
-                style: context.bodySSB.copyWith(color: context.white),
+                style: context.bodySSB.copyWith(color: context.lightBlue),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -104,6 +104,7 @@ class LoginScreen extends StatelessWidget {
               ),
               const VSpace(1),
               CustomButton(
+                variant: CustomButtonVariant.primary,
                 text: 'Log In',
                 isLoading: isLoading,
                 icon: CupertinoIcons.arrow_right_circle_fill,
@@ -121,9 +122,7 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   Text(
                     "Don't have an account?   ",
-                    style: context.labelMR.copyWith(
-                      color:context.black
-                    ),
+                    style: context.labelMR
                   ),
                   CustomButton.text(text: 'Sign up'.toUpperCase(), 
                   onPressed:()=> Navigator.pushReplacementNamed(context, AppRoutes.signup),),

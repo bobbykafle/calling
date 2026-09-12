@@ -14,14 +14,14 @@ class AppLegalFooter extends StatelessWidget {
           Text(
             '© 2026 ConnectCall.',
             style: context.labelSR.copyWith(
-              color: context.black,
+             
             ),
           ),
           const SizedBox(height: 6),
           Text(
             'Terms of Service  •  Privacy Policy',
             style:context.labelSR.copyWith(
-              color: context.black,
+             
             ),
           ),
         ],

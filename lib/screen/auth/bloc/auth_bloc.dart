@@ -139,7 +139,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(status: AuthStatus.authenticated, user: user));
 
       unawaited(ZegoCallManager.init(user).catchError((e) {
-        // silent fail, auth flow lai affect gardaina
+        
       }));
     } catch (e) {
       emit(state.copyWith(

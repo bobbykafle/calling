@@ -1,15 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectcall/repo/profile_repo.dart';
 import 'package:connectcall/routes/app_routes.dart';
 import 'package:connectcall/screen/auth/update_screen.dart';
 import 'package:connectcall/screen/onboard/profile/bloc/profile_bloc.dart';
 import 'package:connectcall/screen/onboard/profile/bloc/profile_event.dart';
 import 'package:connectcall/screen/onboard/profile/bloc/profile_state.dart';
+import 'package:connectcall/screen/user_block.dart';
 import 'package:connectcall/utils/build_context.dart';
 import 'package:connectcall/widgets/app_auth_scafflod.dart';
 import 'package:connectcall/widgets/app_button.dart';
 import 'package:connectcall/widgets/app_header.dart';
 import 'package:connectcall/widgets/app_space.dart';
 import 'package:connectcall/widgets/edit_profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -163,7 +166,7 @@ class _ProfileView extends StatelessWidget {
 
                   const SizedBox(height: 28),
                   CustomButton(
-                    variant: CustomButtonVariant.secondary,
+                    variant: CustomButtonVariant.primary,
                     text: "Edit Profile",
                     onPressed: () => _goToEditProfile(context, user),
                     icon: CupertinoIcons.pencil_circle,
@@ -171,8 +174,8 @@ class _ProfileView extends StatelessWidget {
 
                   const VSpace(2),
                   CustomButton(
-                    variant: CustomButtonVariant.secondary,
-                    text: "Change Password",
+                    variant: CustomButtonVariant.primary,
+                    text: " Password",
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -181,6 +184,40 @@ class _ProfileView extends StatelessWidget {
                     ),
                     icon: CupertinoIcons.lock,
                   ),
+
+                   const VSpace(2),
+              StreamBuilder<DocumentSnapshot>(
+  stream: FirebaseFirestore.instance.collection('users').doc(user.uid).snapshots(),
+  builder: (context, snap) {
+    if (!snap.hasData || snap.data == null || !snap.data!.exists) {
+      return const SizedBox.shrink();
+    }
+
+    final blockedIds = List<String>.from(
+      (snap.data!.data() as Map<String, dynamic>?)?['blockedUserIds'] ?? [],
+    );
+
+    return Column(
+      children: [
+        const VSpace(2),
+        CustomButton(
+          variant: CustomButtonVariant.primary,
+          text: "Block List (${blockedIds.length})",
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BlockedUsersScreen(blockedIds: blockedIds),
+            ),
+          ),
+          icon: CupertinoIcons.person_2,
+        ),
+      ],
+    );
+  },
+),
+                    
+                    
+                  
                   const VSpace(2),
                   CustomButton(
                     variant: CustomButtonVariant.primary,
@@ -219,21 +256,18 @@ class _ProfileView extends StatelessWidget {
       context: context,
       builder: (dialogContext) => AlertDialog(
         backgroundColor: context.surface,
-
         title: Center(
           child: Text(
             'Log out?',
             style: context.titleMR.copyWith(color: context.onSurface),
           ),
         ),
-
         content: Text(
           'You will need to log in again to make calls.',
           style: context.bodySSB.copyWith(
             color: context.onSurface.withOpacity(0.7),
           ),
         ),
-
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
@@ -242,11 +276,9 @@ class _ProfileView extends StatelessWidget {
               style: context.labelMB.copyWith(color: context.primary),
             ),
           ),
-
           TextButton(
             onPressed: () {
               Navigator.pop(dialogContext);
-
               context.read<ProfileBloc>().add(const LogoutRequested());
             },
             child: Text(
@@ -259,3 +291,4 @@ class _ProfileView extends StatelessWidget {
     );
   }
 }
+

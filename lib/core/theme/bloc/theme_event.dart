@@ -6,7 +6,6 @@ abstract class ThemeEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Set the theme to a specific mode (light / dark / system).
 class ThemeModeChanged extends ThemeEvent {
   const ThemeModeChanged(this.mode);
   final ThemeMode mode;
@@ -14,7 +13,6 @@ class ThemeModeChanged extends ThemeEvent {
   List<Object?> get props => [mode];
 }
 
-/// Flip between light and dark — what a simple toggle button dispatches.
 class ThemeModeToggled extends ThemeEvent {
   const ThemeModeToggled();
 }

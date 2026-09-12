@@ -18,7 +18,6 @@ class CallLogService {
     _direction = null;
   }
 
-  // Callee receives a ring — remember who's calling, in case it goes missed.
   void trackIncoming(String callerId, String callerName, bool isVideoCall) {
     _otherUserId = callerId;
     _otherUserName = callerName;
