@@ -1,193 +1,206 @@
 # ConnectCall (Cally)
 
-ConnectCall is a Flutter-based audio and video calling application that allows users to connect with each other through one-to-one and group calls.
+ConnectCall is a Flutter-based mobile application for real-time audio and video calling. Users can create an account, manage their profile, view contacts, make calls, and check their call history.
 
-The app uses Firebase for authentication and data management, Cloudinary for profile image storage, and ZegoCloud for real-time audio and video calling.
+## Project Description
 
-## About the Project
-
-I built ConnectCall as a practical Flutter project to learn and implement real-time communication features in a mobile application.
-
-Users can create an account, set up their profile, find other registered users, make audio or video calls, view call history, and manage their contacts.
-
-The project follows the BLoC pattern to keep the UI, business logic, and data-related code separated and easier to maintain.
+The main purpose of this project is to build a simple and user-friendly communication app with one-to-one audio and video calling. The application uses Firebase for authentication and data storage, Cloudinary for profile images, and ZegoCloud for real-time calling.
 
 ## Features
 
-### Authentication
+- User registration and login
+- Firebase authentication
+- Email verification
+- Forgot and reset password
+- User profile management
+- Profile photo upload
+- Contacts list
+- Online/offline presence
+- One-to-one audio calling
+- One-to-one video calling
+- Call invitations
+- Call controls
+- Call history
+- Missed, declined, completed and cancelled call status
+- Camera and microphone permission handling
+- Network connection checking
+- Light and dark theme
+- Group calling UI
 
-- User registration with email and password
-- User login
-- Forgot password
-- Password reset through Firebase email 
-- Profile photo selection during registration
+## Flutter Version
 
-### Contacts
+- Flutter SDK: `^3.12.2`
+- Programming Language: Dart
 
-- View registered users
-- Real-time contact updates
-- Search contacts by name
-- Online and offline status
-- Recently called contacts
-- Block and unblock users
-- Separate blocked users screen
+## Packages Used
 
-### Profile
-
-- View user profile
-- Edit display name
-- Edit profile photo
-- Profile photo upload using Cloudinary
-- Reusable profile photo picker
-- Logout with confirmation
-
-### Audio & Video Calling
-
-- One-to-one audio calls
-- One-to-one video calls
-- Group calling
-- Incoming call screen
-- Accept and decline calls
-- Call duration timer
-- Mute and unmute microphone
-- Turn camera on/off
-- Switch between front and rear camera
-- Speaker on/off
-- End call
-- Call status handling
-- Screen sharing on Android
-
-### Call History
-
-Call history is automatically stored and displayed in the app.
-
-Available filters:
-
-- All calls
-- Missed calls
-- Outgoing calls
-
-Each call entry includes:
-
-- Caller or receiver name
-- Profile photo
-- Call type
-- Date and time
-- Call duration
-- Call status
-
-### Other Features
-
-- Light mode and dark mode
-- Theme persistence
-- Network connectivity check before making calls
-- User-friendly error messages
-- Non-blocking SnackBar feedback
-
-## Tech Stack
-
-- **Flutter**
-- **Dart**
-- **BLoC / flutter_bloc**
-- **Firebase Authentication**
-- **Cloud Firestore**
-- **Firebase Messaging**
-- **ZegoCloud**
-- **Cloudinary**
-- **Dio / HTTP**
-- **Flutter Hooks**
-- **Formz**
-- **Google Fonts**
-- **Image Picker**
-- **Connectivity Plus**
+- `flutter_bloc` – State management
+- `firebase_core` – Firebase initialization
+- `firebase_auth` – User authentication
+- `cloud_firestore` – Database and user data
+- `image_picker` – Profile image selection
+- `connectivity_plus` – Network connection checking
+- `flutter_dotenv` – Environment variables
+- `zego_uikit_prebuilt_call` – Audio and video calling
+- `zego_uikit_signaling_plugin` – Call signaling
+- `zego_uikit` – ZegoCloud calling UI and features
+- `zego_zim` – Real-time communication support
 
 ## Architecture
 
-The project uses a simple layered BLoC architecture.
+The project follows a simple layered architecture:
 
-
-UI / Screens
-     ↓
-   BLoC
-     ↓
- Repository
-     ↓
+Screen / UI
+↓
+BLoC
+↓
+Repository
+↓
 Firebase / ZegoCloud / Cloudinary
 
+### Project Structure
 
-Project Structure
+```text
 lib/
-│
 ├── repo/
-│   └── Firebase, Firestore, Cloudinary and other data access
-│
 ├── screen/
-│   │
 │   ├── auth/
 │   │   └── bloc/
-│   │       ├── Login
-│   │       ├── Signup
-│   │       ├── Forgot Password
-│   │       └── Logout
-│   │
 │   └── onboard/
-│       │
 │       ├── contact/
 │       │   └── bloc/
-│       │
 │       ├── profile/
 │       │   └── bloc/
-│       │
 │       ├── calls/
 │       │   └── bloc/
-│       │
 │       └── group_call/
-│
 ├── service/
 │   ├── zego_call_manager.dart
 │   ├── zego_call_ui_config.dart
 │   ├── call_log_service.dart
 │   └── presence_service.dart
-│
 ├── utils/
 │   ├── call_feedback.dart
 │   ├── network_check.dart
 │   └── zego_avatar_cache.dart
-│
-├── widgets/
-│   └── Shared reusable widgets
-│
-└── main.dart
+└── widgets/
+```
+BLoC handles application state, repositories handle data access, and services handle calling, presence, and call-related operations.
 
-| Package                       | Purpose                                          |
-| ----------------------------- | ------------------------------------------------ |
-| `flutter_bloc`                | State management using the BLoC pattern          |
-| `equatable`                   | Value equality for BLoC events and states        |
-| `firebase_core`               | Firebase initialization                          |
-| `firebase_auth`               | User authentication and password reset           |
-| `cloud_firestore`             | Users, contacts, blocked users, and call history |
-| `firebase_messaging`          | Push notification infrastructure                 |
-| `dio` / `http`                | HTTP requests, including Cloudinary uploads      |
-| `flutter_hooks`               | Hook-based Flutter widgets                       |
-| `flutter_dotenv`              | Loading environment variables                    |
-| `formz`                       | Form validation                                  |
-| `pinput`                      | PIN/OTP input                                    |
-| `google_fonts`                | Application typography                           |
-|                               |                                                  |
-| `image_picker`                | Selecting profile images                         |
-| `connectivity_plus`           | Checking network connectivity                    |
-| `intl`                        | Date and time formatting                         |
-| `zego_uikit_prebuilt_call`    | ZegoCloud audio/video calling and invitations    |
-| `zego_uikit_signaling_plugin` | Signaling and call invitations                   |
-| `zego_uikit`                  | ZegoCloud UI Kit types and call controls         |
-| `zego_zim`                    | ZegoCloud messaging/signaling core               |
-| `cupertino_icons`             | iOS-style icons                                  |
-| `flutter_lints`               | Flutter development lint rules                   |
+Backend Used
+
+The project does not use a separate custom backend server.
+
+It uses:
+
+Firebase Authentication – Login, registration and account management
+Cloud Firestore – Users, contacts, presence and call information
+Cloudinary – Profile image storage
+Calling SDK Used
+
+The project uses ZegoCloud for real-time audio and video calling.
+
+Main packages:
+`zego_uikit_prebuilt_call` |
+`zego_uikit_signaling_plugin` |
+`zego_uikit` |
+`zego_zim` |
+
+ZegoCloud is used for:
+
+One-to-one audio calls |
+One-to-one video calls |
+Call invitations |
+Call controls |
+Camera/microphone handling |
+Calling UI and configuration |
+
+## Setup Instructions
+</p>
+
+1. Clone the repository
+- `cd connectcall`
+- `git clone <your-repository-url>`
+    
+2. Install dependencies
+-  `flutter pub get`
+  
+3. Configure Firebase
+- Create a Firebase project and enable:
+- Firebase Authentication
+- Cloud Firestore
+  - Then add the required Firebase configuration files for Android/iOS.
+
+4. Configure ZegoCloud
+- Create a ZegoCloud project and get:
+- `App Id`
+- `App Sign`
+ -Add them to the environment configuration.
+
+5. Configure Cloudinary
+- Create a Cloudinary account and configure the upload preset used by the application.
+
+6. Add Android permissions
+- Add the required camera, microphone, internet and calling permissions in:
+- `android/app/src/main/AndroidManifest.xml`
+  
+7. Run the application
+- `flutter run`
+</p>
 
 
-## Flutter Version
+## Environment Variables / Configuration
+- Create a .env file in the project root:
+  - `ZEGO_APP_ID=your_numeric_zego_app_id`
+  - `ZEGO_APP_SIGN=your_zego_app_sign_string`
+    - Do not commit .env or Firebase configuration files containing sensitive information.
 
-The project uses the Flutter SDK version defined in `pubspec.yaml`.
+Recommended .gitignore entries:
 
-```text
-Flutter SDK constraint: ^3.12.2
+ - `.env`
+ - `android/app/google-services.json`
+ - `ios/Runner/GoogleService-Info.plist`
+ - `lib/firebase_options.dart`
+ - `android/key.properties`
+ - `Error Handling`
+
+    -The application handles common calling and network situations such as:
+
+- No internet connection
+- Connection failure
+- Camera/microphone permission issues
+- No answer
+- Missed call
+- Declined call
+- Busy user
+- Cancelled call
+
+   -Call results are also stored in the call history where applicable.
+
+## Known Limitations
+- Network quality is currently inferred from the connection type rather than measuring actual bandwidth.
+- Call recording is not implemented.
+- Full Firebase Cloud Messaging support for every killed/background state is not separately implemented or tested.
+- Changing the email shown in the profile does not update the Firebase Authentication email without proper re-authentication.
+- Avatar caching is in-memory and resets when the application restarts.
+- Cloudinary currently uses an unsigned upload preset.
+- Group calling has been tested less extensively than one-to-one calling.
+
+## AI Tools Used
+AI tools were used during development to fix bugs, remove errors, enhance work efficiency, and act as a development assistant for:
+- Understanding Flutter and Dart concepts
+- Planning project architecture
+- Writing and improving BLoC, repository and service code
+- Debugging compile-time and runtime errors
+- Improving UI implementation
+- Understanding ZegoCloud SDK integration and why to choose among others
+- Reviewing and improving code structure
+- Comprehensive research and technical problem-solving
+
+AI Tools Used: Gemini, Claude, and Perplexity
+
+AI was used to assist with development, research, and problem solving. The final implementation, testing, and integration were done within the project.
+
+## Project Status
+The main authentication, profile, contacts, calling and call-history features have been implemented.
+The project is currently focused on improving stability, UI, calling reliability and overall production readiness.
