@@ -186,20 +186,7 @@ Recommended .gitignore entries:
 - Cloudinary currently uses an unsigned upload preset.
 - Group calling has been tested less extensively than one-to-one calling.
 
-## AI Tools Used
-AI tools were used during development to fix bugs, remove errors, enhance work efficiency, and act as a development assistant for:
-- Understanding Flutter and Dart concepts
-- Planning project architecture
-- Writing and improving BLoC, repository and service code
-- Debugging compile-time and runtime errors
-- Improving UI implementation
-- Understanding ZegoCloud SDK integration and why to choose among others
-- Reviewing and improving code structure
-- Comprehensive research and technical problem-solving
 
-AI Tools Used: Gemini, Claude, and Perplexity
-
-AI was used to assist with development, research, and problem solving. The final implementation, testing, and integration were done within the project.
 
 ## Project Status
 The main authentication, profile, contacts, calling and call-history features have been implemented.
